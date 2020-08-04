@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--1.扫描Controller注解-->
+    <context:component-scan base-package="com.itheima.web"/>
+    <!--2. 注册SpringMVC的三大组件：处理映射器，处理器适配器，视图解析器  -->
+    <!--2.1 视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--前缀-->
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <!--后缀-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!--2.2 注解驱动-->
+    <!--3.把新的转换器工厂存入SpringMVC环境（***）-->
+    <mvc:annotation-driven conversion-service="conversionServiceFactory"/>
+    <!--配置日期转换器-->
+    <!--1.创建转换器对象,放入IOC容器-->
+    <bean id="stringToDateConverter" class="com.itheima.web.converter.StringToDateConverter"/>
+    <!--2.把自己的转换器对象放入SpringMVC的转换器工厂-->
+    <bean id="conversionServiceFactory" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <!--放入工厂里面-->
+        <property name="converters">
+            <set>
+                <ref bean="stringToDateConverter"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean class="com.itheima.web.exceptions.CustomExceptionResovler"/>
+</beans>

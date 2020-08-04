@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--
+   namespace: 写需要映射的接口的全名
+-->
+<mapper namespace="com.itheima.dao.company.CompanyDao">
+    <!--定义resultMap-->
+    <!--
+       规则：
+        property: 一看到这个属性肯定找类的元素
+        column： 一看到这个属性肯定表的元素
+    -->
+    <resultMap id="BaseResultMap" type="com.itheima.domain.company.Company">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="expiration_datedatetime" property="expirationDate"/>
+        <result column="address" property="address"/>
+        <result column="license_id" property="licenseId"/>
+        <result column="representative" property="representative"/>
+        <result column="phone" property="phone"/>
+        <result column="company_size" property="companySize"/>
+        <result column="industry" property="industry"/>
+        <result column="remarks" property="remarks"/>
+        <result column="state" property="state"/>
+        <result column="balance" property="balance"/>
+        <result column="city" property="city"/>
+    </resultMap>
+
+    <!--查询所有-->
+    <!--
+        id: Dao接口的方法名称
+        resultMap: 用于表字段名称和类的属性名称不完全一致的情况
+    -->
+    <select id="findAll" resultMap="BaseResultMap">
+        select * from ss_company
+    </select>
+</mapper>
