@@ -19,9 +19,8 @@ public class Company {
     private String companySize;
     private String industry;
     private String remarks;
-    private String state;
-    private String balance;
-    private String createTime;
+    private int state;
+    private double balance;
     private String city;
 
     @Override
@@ -37,9 +36,8 @@ public class Company {
                 ", companySize='" + companySize + '\'' +
                 ", industry='" + industry + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", state='" + state + '\'' +
-                ", balance='" + balance + '\'' +
-                ", createTime='" + createTime + '\'' +
+                ", state=" + state +
+                ", balance=" + balance +
                 ", city='" + city + '\'' +
                 '}';
     }
@@ -124,28 +122,20 @@ public class Company {
         this.remarks = remarks;
     }
 
-    public String getState() {
+    public int getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(int state) {
         this.state = state;
     }
 
-    public String getBalance() {
+    public double getBalance() {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
     }
 
     public String getCity() {

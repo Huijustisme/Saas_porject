@@ -20,5 +20,6 @@ public class testDemo2 {
             List<Company> list = companyService.findAll();
 
         }
+
     }
 }

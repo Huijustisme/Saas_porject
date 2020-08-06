@@ -23,6 +23,20 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <!--注入数据-->
         <property name="dataSource" ref="dataSource"/>
+        <!--MyBatis分页插件-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <!--使用下面的方式配置参数，一行配置一个 -->
+                        <value>
+                            helperDialect=mysql
+                            reasonable=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
 
     <!--4.扫描Dao接口所在包-->
@@ -30,4 +44,6 @@
         <!--配置dao包-->
         <property name="basePackage" value="com.itheima.dao"/>
     </bean>
+
+
 </beans>
