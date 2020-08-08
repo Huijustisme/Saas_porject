@@ -86,7 +86,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${page.rows}" var="dept"  varStatus="st">
+                    <c:forEach items="${pageInfo.list}" var="dept"  varStatus="st">
                         <tr>
                             <td><input type="checkbox" name="id" value="${dept.id }"/></td>
                             <td>${st.count }</td>
@@ -108,5 +108,35 @@
     </div>
 </section>
 </div>
+<script>
+    function deleteById() {
+        var id = getCheckId()
+        if (id){
+            if (("你确定要删除此条记录吗？")){
+                //异步请求后台
+                $.ajax({
+                    url:'/system/dept/delete.do',
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function(result){
+                        //{"flag":true/false,"errorMsg":"xxxxx"}
+                        if (result.flag){
+                            //删除成功
+                            alert("删除成功");
+                            //刷新页面
+                            window.location.reload();
+                        } else {
+                            //删除失败
+                            alert("删除失败"+result.errorMsg);
+                        }
+                    }
+                });
+            }
+        }else {
+            alert("请勾选待处理的记录，且每次只能勾选一个")
+        }
+    }
+</script>
 </body>
 </html>

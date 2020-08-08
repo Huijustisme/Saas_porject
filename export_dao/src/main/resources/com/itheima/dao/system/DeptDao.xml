@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--
+   namespace: 写需要映射的接口的全名
+-->
+<mapper namespace="com.itheima.dao.system.DeptDao">
+    <!--定义resultMap-->
+    <!--
+       规则：
+        property: 一看到这个属性肯定找类的元素
+        column： 一看到这个属性肯定表的元素
+    -->
+
+    <!--封装ResultMap-->
+    <resultMap id="BaseResultMap" type="com.itheima.domain.system.Dept">
+        <id column="dept_id" property="id"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="state" property="state"/>
+        <result column="company_id" property="companyId"/>
+        <result column="company_name" property="companyName"/>
+        <!--
+                   association: 封装一个对象，现在就是封装Dept parent对象
+                      property: 需要封装对象的属性名称
+                      column: 封装对象查询时所需要的SQL语句的参数（条件）
+                      javaType: 需要封装对象的类型
+                      select: 封装对象查询时所需要的SQL语句(通过Dao接口的方法名称去查询的)
+
+                -->
+        <association column="parent_id" property="parent" javaType="com.itheima.domain.system.Dept" select="com.itheima.dao.system.DeptDao.findById"/>
+    </resultMap>
+    <!--添加-->
+    <insert id="save" parameterType="com.itheima.domain.system.Dept">
+          insert into pe_dept(
+                    dept_id,
+                    dept_name,
+                    parent_id,
+                    state,
+                    company_id,
+                    company_name
+                  ) values(
+                    #{id},
+                    #{deptName},
+                    <choose>
+                        <when test="parent==null || parent.id==''">
+                            NULL,
+                        </when>
+                        <otherwise>
+                            #{parent.id},
+                        </otherwise>
+                    </choose>
+                    #{state},
+                    #{companyId},
+                    #{companyName}
+                  )
+    </insert>
+
+    <!--修改-->
+    <update id="update" parameterType="com.itheima.domain.system.Dept">
+          update pe_dept SET
+                    dept_name = #{deptName},
+                    <choose>
+                        <when test="parent==null || parent.id==''">
+                            parent_id=NULL,
+                        </when>
+                        <otherwise>
+                            parent_id=#{parent.id},
+                        </otherwise>
+                    </choose>
+                    state = #{state},
+                    company_id = #{companyId},
+                    company_name = #{companyName}
+                  where dept_id = #{id}
+    </update>
+
+    <!--删除部门-->
+    <delete id="delete" parameterType="string">
+         delete from pe_dept where dept_id = #{deptId}
+    </delete>
+
+
+    <!--查询当前企业的所有部门-->
+    <select id="findAll" parameterType="string" resultMap="BaseResultMap">
+        select * from pe_dept where company_id = #{companyId}
+    </select>
+
+    <!--根据id查询部门-->
+    <select id="findById" parameterType="string" resultMap="BaseResultMap">
+        select * from pe_dept where dept_id = #{deptId}
+    </select>
+
+
+    <!--查询部门的子部门数量-->
+    <select id="findDeptByParentId" parameterType="string" resultType="java.lang.Long">
+         select count(*) from pe_dept where parent_id = #{deptId}
+    </select>
+
+</mapper>

@@ -3,22 +3,21 @@ package com.itheima.web.controller.company;
 import com.github.pagehelper.PageInfo;
 import com.itheima.domain.company.Company;
 import com.itheima.service.company.CompanyService;
+import com.itheima.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 企业控制器
  */
 @Controller
 @RequestMapping("/company")
-public class CompanyController {
+public class CompanyController extends BaseController {
     //注入业务对象
     @Autowired
     private CompanyService companyService;
@@ -48,14 +47,26 @@ public class CompanyController {
     }*/
 
     /**
-     * 添加企业
+     * 方法的API：
+     *    方法URL： http://localhost:8080/company/list.do
+     *    方法参数： pageNum=1&pageSize=5
+     *    方法返回值： /WEB-INF/pages/company/company-list.jsp
+     *
+     *    @RequestParam(defaultValue = "1")： 给参数设置默认值，当前参数为NULL使用默认值
      */
-    @RequestMapping("/save")
-    public String save(Date date){
-        //int i =10/0;
-        System.out.println(date);
-        return "success";
+    @RequestMapping("/list")
+    public String list( //HttpServletRequest request,
+                        @RequestParam(defaultValue = "1")Integer pageNum,
+                        @RequestParam(defaultValue = "5")Integer pageSize){
+        //调用业务方法
+        PageInfo pageInfo = companyService.findByPage(pageNum,pageSize);
+        //把数据存入request域
+        request.setAttribute("pageInfo",pageInfo);
+        //返回jsp页面
+        return "company/company-list";
     }
+
+
 
     /**
      * 跳转新增页面
@@ -68,6 +79,8 @@ public class CompanyController {
         System.out.println("即将跳转页面");
         return "company/company-add";
     }
+
+
 
     /**
      * 保存数据（添加/修改）
@@ -88,6 +101,8 @@ public class CompanyController {
         return "redirect:/company/list.do";
     }
 
+
+
     /**
      * 进入修改页面
      *  1）URL： http://localhost:8080/company/toUpdate.do
@@ -95,7 +110,7 @@ public class CompanyController {
      *  3）返回：/WEB-INF/pages/company/company-update.jsp
      */
     @RequestMapping("/toUpdate")
-    public String toUpdate(String id,HttpServletRequest request){
+    public String toUpdate(String id){ //,HttpServletRequest request
         //1.查询一个企业对象
         Company company = companyService.findById(id);
         //2.存入request域
@@ -115,22 +130,13 @@ public class CompanyController {
     }
 
     /**
-     * 方法的API：
-     *    方法URL： http://localhost:8080/company/list.do
-     *    方法参数： pageNum=1&pageSize=5
-     *    方法返回值： /WEB-INF/pages/company/company-list.jsp
-     *
-     *    @RequestParam(defaultValue = "1")： 给参数设置默认值，当前参数为NULL使用默认值
+     * 添加企业
      */
-    @RequestMapping("/list")
-    public String list(HttpServletRequest request,
-                       @RequestParam(defaultValue = "1")Integer pageNum,
-                       @RequestParam(defaultValue = "5")Integer pageSize){
-        //调用业务方法
-        PageInfo pageInfo = companyService.findByPage(pageNum,pageSize);
-        //把数据存入request域
-        request.setAttribute("pageInfo",pageInfo);
-        //返回jsp页面
-        return "company/company-list";
+    @RequestMapping("/save")
+    public String save(Date date){
+        //int i =10/0;
+        System.out.println(date);
+        return "success";
     }
+
 }

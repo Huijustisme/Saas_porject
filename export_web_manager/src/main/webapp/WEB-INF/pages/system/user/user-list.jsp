@@ -19,7 +19,36 @@
         var id = getCheckId()
         if(id) {
             if(confirm("你确认要删除此条记录吗？")) {
-                location.href="/system/user/delete.do?id="+id;
+                //location.href="/system/user/delete.do?id="+id;
+                /*$.get(
+                    "/system/user/delete.do",
+                    {"id":id},
+                    function(jsn){
+                        alert(jsn.message);
+                        //删除后，重新加载页面
+                        window.location.reload();
+                    }
+                );*/
+
+                $.ajax({
+                    url:'/system/user/delete.do',
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function (result) {
+                        //alert(result)
+                        if(result.flag){
+                            //删除成功
+                            alert('删除成功');
+                            //刷新页面
+                            window.location.reload();
+                        }else{
+                            //删除失败
+                            alert('删除失败：'+result.errorMsg);
+                        }
+                    }
+                });
+
             }
         }else{
             alert("请勾选待处理的记录，且每次只能勾选一个")
@@ -87,10 +116,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${page.rows}" var="item">
+                    <c:forEach items="${pageInfo.list}" var="item">
                     <tr>
                         <td><input name="ids" value="${item.id}" type="checkbox"></td>
-                        <td>${status.index+1}</td>
+                        <td>${vs.count}</td>
                         <td><a href="/system/user/toUpdate.do?id=${o.id}">${item.userName}</a></td>
                         <td>${item.deptName }</td>
                         <td>${item.email }</td>
