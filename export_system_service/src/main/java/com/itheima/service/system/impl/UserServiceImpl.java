@@ -64,4 +64,18 @@ public class UserServiceImpl implements UserService {
         userDao.delete(id);
         return true;
     }
+
+    @Override
+    public void changeRole(String userid, List<String> roleIds) {
+
+        //1.删除用户分配的角色
+        userDao.deleteUserRoleByUserId(userid);
+
+        //2.给用户分配当前勾选的角色
+        if(roleIds!=null && roleIds.size()>0){
+            for(String roleId:roleIds){
+                userDao.saveUserRole(userid,roleId);
+            }
+        }
+    }
 }

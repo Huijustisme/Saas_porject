@@ -38,6 +38,11 @@
       select count(*) from pe_role_user where user_id = #{userId}
     </select>
 
+    <!--统计用户关联部门的数量-->
+    <select id="findUserByDeptId" parameterType="string" resultType="long">
+          select count(*) from pe_user where dept_id = #{deptId}
+    </select>
+
     <!--根据id删除-->
     <delete id="delete">
       delete from pe_user where user_id = #{id}
@@ -84,4 +89,15 @@
         order_no = #{orderNo}
         where user_id = #{id}
     </update>
+
+    <!--删除用户分配到的角色-->
+    <delete id="deleteUserRoleByUserId" parameterType="string">
+        delete from pe_role_user where user_id = #{userId}
+    </delete>
+
+    <!--给用户分配角色-->
+    <insert id="saveUserRole">
+      insert into pe_role_user(user_id,role_id) values(#{userid},#{roleId})
+    </insert>
+
 </mapper>

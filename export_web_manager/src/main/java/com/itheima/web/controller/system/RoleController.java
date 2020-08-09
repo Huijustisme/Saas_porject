@@ -2,8 +2,10 @@ package com.itheima.web.controller.system;
 
 import com.github.pagehelper.PageInfo;
 import com.itheima.domain.system.Dept;
+import com.itheima.domain.system.Module;
 import com.itheima.domain.system.Role;
 import com.itheima.service.system.DeptService;
+import com.itheima.service.system.ModuleService;
 import com.itheima.service.system.RoleService;
 import com.itheima.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,5 +150,78 @@ public class RoleController extends BaseController {
 
         //return map;
         return null;
+    }
+
+    /**
+     * 进入角色分配权限页面
+     *  1）URL：http://localhost:8080/system/role/roleModule.do
+     *  2）参数：roleid=4028a1c34ec2e5c8014ec2ebf8430001
+     *  3）返回：/WEB-INF/pages/system/role/role-module.jsp
+     */
+    @RequestMapping("/roleModule")
+    public String roleModule(String roleid){
+        //1.查询当前角色
+        Role role = roleService.findById(roleid);
+        request.setAttribute("role",role);
+        return "system/role/role-module";
+    }
+
+    @Autowired
+    private ModuleService moduleService;
+    /**
+     * 加载模块树状结构
+     *  1）URL： http://localhost:8080/system/role/getZtreeNodes.do
+     *  2）参数： roleid=1
+     *  3）返回： [ {id:1,name:'',pId:1,open:true,checked:true},{} ]
+     *
+     */
+    @RequestMapping("/getZtreeNodes")
+    @ResponseBody//转换为json字符串
+    public List<Map<String,Object>> getZtreeNodes(String roleid){
+        //List<Map<String,Object>>： 封装树的所有节点数据
+        List<Map<String,Object>> list = new ArrayList<>();
+        //查询所有模块列表
+        List<Module> moduleList = moduleService.findAll();
+        //查询当前角色分配过的模块列表
+        List<Module> roleModuleList = moduleService.findRoleModuleByRoleId(roleid);
+        //把模块数据存入Map中
+        if (moduleList!=null&&moduleList.size()>0){
+            for (Module module : moduleList) {
+                //使用一个Map封装树的一个节点数据
+                Map<String,Object> map = new HashMap<>();
+                //id
+                map.put("id",module.getId());
+                //name
+                map.put("name",module.getName());
+                //pId
+                map.put("pId",module.getParentId());
+                //open
+                map.put("open",true);
+                //让哪些分配过角色的模块添上复选框勾选
+                for (Module module2 : roleModuleList) {
+                    if (module.getId().equals(module2.getId())){
+                        map.put("checked",true);
+                    }
+                }
+                //把Map放入List中
+                list.add(map);
+            }
+        }
+         return list;
+    }
+
+    /**
+     * 保存角色和模块的关系
+     *  1）URL：http://localhost:8080/system/role/updateRoleModule.do
+     *  2）参数：roleid=1&moduleIds=1,2,3
+     *  3）返回：重定向到列表
+     */
+    @RequestMapping("/updateRoleModule")
+    public String updateRoleModule(String roleid,String moduleIds){
+
+        //调用service方法
+        roleService.updateRoleModule(roleid,moduleIds);
+
+        return "redirect:/system/role/list.do";
     }
 }

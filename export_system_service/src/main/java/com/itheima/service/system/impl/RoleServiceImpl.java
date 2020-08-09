@@ -8,6 +8,7 @@ import com.itheima.domain.system.Role;
 import com.itheima.service.system.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -53,6 +54,37 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(String id) {
         roleDao.delete(id);
+    }
+
+    /**
+     * 保存角色和模块的关系
+     *
+     * @param roleid
+     * @param moduleIds
+     */
+    @Override
+    public void updateRoleModule(String roleid, String moduleIds) {
+        //1.先删除当前角色分配过的所有权限
+        roleDao.deleteRoleModuleByRoleId(roleid);
+
+        //2.给当前角色逐一添加当前勾选的权限
+        if(!StringUtils.isEmpty(moduleIds)){
+            String[] moduleIdArray = moduleIds.split(",");
+            for(String moduleId:moduleIdArray){
+                roleDao.saveRoleModule(roleid,moduleId);
+            }
+        }
+    }
+
+    /**
+     * 查询用户分配过的角色
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Role> findUserRoleByUserId(String id) {
+        return roleDao.findUserRoleByUserId(id);
     }
 
 }

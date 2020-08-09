@@ -49,4 +49,17 @@ public interface RoleService {
      */
     void delete(String id);
 
+    /**
+     * 保存角色和模块的关系
+     * @param roleid
+     * @param moduleIds
+     */
+    void updateRoleModule(String roleid, String moduleIds);
+
+    /**
+     * 查询用户分配过的角色
+     * @param id
+     * @return
+     */
+    List<Role> findUserRoleByUserId(String id);
 }

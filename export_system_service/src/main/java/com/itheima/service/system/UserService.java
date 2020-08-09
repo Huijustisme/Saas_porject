@@ -48,4 +48,11 @@ public interface UserService {
      * @return
      */
     boolean delete(String id);
+
+    /**
+     * 保存 用户和角色的关系
+     * @param userid
+     * @param roleIds
+     */
+    void changeRole(String userid, List<String> roleIds);
 }

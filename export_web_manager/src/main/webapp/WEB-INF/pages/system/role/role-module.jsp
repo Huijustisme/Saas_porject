@@ -58,8 +58,8 @@
                     </div>
                     <!--工具栏/-->
                     <!-- 树菜单 -->
-                    <form name="icform" method="post" action="/system/role/updateRoleModule.do">
-                        <input type="hidden" name="roleid" value="${role.id}"/>
+                    <form id="roleForm" name="icform" method="post" action="/system/role/updateRoleModule.do">
+                        <input type="hidden" id="roleid" name="roleid" value="${role.id}"/>
                         <input type="hidden" id="moduleIds" name="moduleIds" value=""/>
                         <div class="content_wrap">
                             <div class="zTreeDemoBackground left" style="overflow: visible">
@@ -79,4 +79,58 @@
     </section>
 </div>
 </body>
+
+
+<script type="text/javascript">
+    //定义全局变量
+    var treeObj = null;
+
+    //异步请求后台获得数据，加载模块树状结构
+    $(function(){
+        $.ajax({
+            url:'/system/role/getZtreeNodes.do',
+            type:'get',
+            data:{roleid:'${role.id}'},
+            dataType:'json',
+            success:function(result){
+                //result： 返回ztree所需要的格式（树节点的内容） 格式： [{id:1,name:'',pId:1,open:true,checked:true},{}]
+
+                //使用ztree加载模块树状结构
+                //1.定义全局setting变量
+                var setting = {
+                    //开启复选框
+                    check:{enable:true},
+                    //启用简单json
+                    data:{
+                        simpleData:{enable:true}
+                    }
+                };
+                //2.定义树节点内容（***）
+                var zNodes = result;
+                //3.初始化
+                treeObj = $.fn.zTree.init($("#treeDemo"),setting,zNodes);
+            }
+        });
+    });
+
+    //提交角色分配权限请求
+    function submitCheckedNodes(){
+        //1.当前角色ID（1个）
+        /*var roleid = '${role.id}';*/
+        //2.当前勾选的模块ID（n个）
+        var nodes = treeObj.getCheckedNodes(true);
+        //3.遍历
+        var moduleIds = "";
+        for (var i = 0; i < nodes.length; i++) {
+            moduleIds += nodes[i].id+",";
+        }
+        //去掉最后一个逗号
+        moduleIds = moduleIds.substring(0,moduleIds.length-1);
+        //alert(moduleIds);
+        //4.填充moduleIds
+        $('#moduleIds').val(moduleIds);
+        //5.提交表单
+        $('#roleForm').submit();
+    }
+</script>
 </html>

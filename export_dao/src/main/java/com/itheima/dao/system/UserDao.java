@@ -3,6 +3,7 @@ package com.itheima.dao.system;
 
 
 import com.itheima.domain.system.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,4 +31,24 @@ public interface UserDao {
      * @return
      */
     long findRoleByUserId(String id);
+
+    /**
+     * 查询用户关联部门的数量
+     * @param id
+     * @return
+     */
+    long findUserByDeptId(String id);
+
+    /**
+     * 删除有用户分配的角色
+     * @param userid
+     */
+    void deleteUserRoleByUserId(String userid);
+
+    /**
+     * 给用户分配角色
+     * @param userid
+     * @param roleId
+     */
+    void saveUserRole(@Param("userid") String userid, @Param("roleId") String roleId);
 }

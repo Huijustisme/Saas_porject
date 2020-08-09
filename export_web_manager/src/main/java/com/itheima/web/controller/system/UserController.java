@@ -2,8 +2,10 @@ package com.itheima.web.controller.system;
 
 import com.github.pagehelper.PageInfo;
 import com.itheima.domain.system.Dept;
+import com.itheima.domain.system.Role;
 import com.itheima.domain.system.User;
 import com.itheima.service.system.DeptService;
+import com.itheima.service.system.RoleService;
 import com.itheima.service.system.UserService;
 import com.itheima.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,5 +147,51 @@ public class UserController extends BaseController {
         }
 
         return map;
+    }
+
+    @Autowired
+    private RoleService roleService;
+    /**
+     * 进入用户分配角色页面
+     *  1）URL： http://localhost:8080/system/user/roleList.do
+     *  2)参数：id=002108e2-9a10-4510-9683-8d8fd1d374ef
+     *  3）返回：/WEB-INF/pages/system/user/user-role.jsp
+     */
+    @RequestMapping("/roleList")
+    public String roleList(String id){
+        //1.查询当前企业的所有角色
+        List<Role> roleList = roleService.findAll(getLoginCompanyId());
+
+        //2.查询当前用户分配过的角色
+        List<Role> userRoleList = roleService.findUserRoleByUserId(id);
+
+        request.setAttribute("roleList",roleList);
+        request.setAttribute("userRoleList",userRoleList);
+
+        //3.查询当前用户
+        User user = userService.findById(id);
+        request.setAttribute("user",user);
+
+        return "system/user/user-role";
+    }
+
+    /**
+     * 保存用户和角色的关系
+     *  1）URL: http://localhost:8080/system/user//changeRole.do
+     *  2)参数：userid=1&roleIds=1&roleIds=2&roleIds=3....
+     *  3）返回：重定向到列表
+     *
+     *     接收多个同名的参数的情况：
+     *      1）String： 把所有参数值以逗号分隔拼接成一个字符串
+     *      2）String[]: 使用数组分别接收每个参数值
+     *      3）List<String>: 不能直接使用集合接收，必须加上@RequestParam注解接收
+     */
+    @RequestMapping("/changeRole")
+    public String changeRole(String userid,@RequestParam("roleIds") List<String> roleIds){
+
+        //调用业务
+        userService.changeRole(userid,roleIds);
+
+        return "redirect:/system/user/list.do";
     }
 }

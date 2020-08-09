@@ -3,6 +3,7 @@ package com.itheima.service.system.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.itheima.dao.system.DeptDao;
+import com.itheima.dao.system.UserDao;
 import com.itheima.domain.system.Dept;
 import com.itheima.service.system.DeptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import java.util.UUID;
 public class DeptServiceImpl implements DeptService {
     @Autowired
     private DeptDao deptDao;
+    @Autowired
+    private UserDao userDao;
 
     /**
      * 分页查询
@@ -84,7 +87,9 @@ public class DeptServiceImpl implements DeptService {
         //1）如果删除的部门，有子部门，不能直接，提示用户“该部门存在其他关联，不能删除”
         //1.1 查询该部门是否存在子部门
         long count = deptDao.findDeptByParentId(id);
-        if (count>0) {
+        //查询用户是否关联该部门
+        long userCount = userDao.findUserByDeptId(id);
+        if (count>0 || userCount>0) {
             //有子部门
             return false;
         }
