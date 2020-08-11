@@ -4,6 +4,12 @@ import com.itheima.domain.system.Module;
 import com.itheima.domain.system.User;
 import com.itheima.service.system.ModuleService;
 import com.itheima.service.system.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -35,7 +41,7 @@ public class LoginController extends BaseController {
             return "forward:/login.jsp";
         }
 
-        //2.根据Email查询用户是否存在
+       /* //2.根据Email查询用户是否存在
         User loginUser = userService.findByEmail(email);
         //3.1 不存在，则提示"账户不存在"
         if (loginUser == null) {
@@ -59,7 +65,53 @@ public class LoginController extends BaseController {
         //存入session
         session.setAttribute("menus",moduleList);
         //跳转到主页`
-        return "home/main";
+        return "home/main";*/
+
+        //使用Shiro的登录认证逻辑
+        //1.获取并封装用户登录数据（账户和密码）
+        //UsernamePasswordToken: 用于封装用户登录数据
+        UsernamePasswordToken token = new UsernamePasswordToken(email, password);
+        //2.调用Shiro的登录方法
+        //2.1 获取Subject对象
+        Subject subject = SecurityUtils.getSubject();
+
+        try {
+            subject.login(token);
+            //3.1 如果登录方法没有异常，代表登录成功
+
+            //注意：Shiro底层在登录成功后，会自动在session域存入两个数据，这个两个数据用于标记用户为登录状态（给authc过滤器识别的）
+
+            //虽然我们不需要为Shiro的认证提供session标记，但是我们也需要在业务中用到session数据，例如：页面显示登录用户名，在业务中需要使用登录用户
+            //从Subject对象中获取登录用户对象(主体): getPrincipal()
+            User loginUser = (User) subject.getPrincipal();
+            session.setAttribute("loginUser",loginUser);
+            //调用业务层，根据不同用户级别查询各自的权限（菜单）
+            List<Module> moduleList = moduleService.findModuleByUser(loginUser);
+            //去除重复模块对象（利用HashSet去重，前提是：覆盖Module的hashCode和equals方法）
+            removeDuplicate(moduleList);
+            //存入session
+            session.setAttribute("menus",moduleList);
+            //跳到主页
+            return "home/main";
+        } catch (UnknownAccountException e) {
+            //UnknownAccountException:代表账户不存在
+            //3.2 如果登录方法有异常代表登录失败
+            request.setAttribute("error","Shiro-账户不存在");
+            //跳转回电登陆页面
+            return "forward:/login.jsp";
+        } catch (IncorrectCredentialsException e){
+            //IncorrectCredentialsException:代表密码错误
+            //3.2 如果登录方法有异常代表登录失败
+            request.setAttribute("error","Shiro-密码输入有误！");
+            //跳转回电登陆页面
+            return "forward:/login.jsp";
+        } catch (Exception e){
+            //IncorrectCredentialsException:代表密码错误
+            //3.2 如果登录方法有异常代表登录失败
+            request.setAttribute("error","Shiro-其他错误");
+            //跳转回电登陆页面
+            return "forward:/login.jsp";
+        }
     }
 
     /**
@@ -99,6 +151,10 @@ public class LoginController extends BaseController {
     public String logout(){
         //删除session数据
         session.removeAttribute("loginUser");
+        //shiro注销方法
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();//底层清空shiro的对应session数据
+
         return "redirect:/login.jsp";
     }
 }

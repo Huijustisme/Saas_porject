@@ -8,6 +8,7 @@ import com.itheima.dao.system.UserDao;
 import com.itheima.domain.system.Module;
 import com.itheima.domain.system.User;
 import com.itheima.service.system.UserService;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
     public void save(User user) {
         //生成主键
         user.setId(UUID.randomUUID().toString());
+        //加盐加密
+        Md5Hash md5Hash = new Md5Hash(user.getPassword(), user.getEmail());
+        user.setPassword(md5Hash.toString());
         userDao.save(user);
     }
 

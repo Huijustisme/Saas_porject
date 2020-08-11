@@ -9,6 +9,41 @@
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <!--注入安全管理器-->
         <property name="securityManager" ref="securityManager"/>
+        <!--配置Shiro的过滤器-->
+        <!--
+           1) authc过滤器：
+              作用：
+                如果当前用户认证成功了，则放行访问拦截的资源
+                如果当前用户没有认证成功，则自动跳转到登录页面（Shiro的默认登录页面就是/login.jsp，可以通过loginUrl属性来修改）
+                    如： <property name="loginUrl" value="/admin_login.jsp"/>
+
+              过滤规则：
+                   1.1 精确匹配：  如：  /index.jsp=authc
+                   1.2 模糊匹配：
+                      /user/*  : 拦截user目录下一级目录资源（不能拦截user下其他目录的资源）
+                      /user/** : 拦截user目录下任意级目录所有资源
+
+          2) anon过滤器
+               作用：
+                 被anon过滤器拦截的资源，无需认证都可以访问的！
+
+               注意：
+                   anon过滤器必须配置authc之前，否则无效的
+        -->
+        <property name="filterChainDefinitions">
+            <value>
+                /css/**=anon
+                /img/**=anon
+                /make/**=anon
+                /plugins/**=anon
+                /login.do=anon
+                <!--/company/list.do=perms["企业管理"]
+                /system/user/list.do=perms["用户管理"]-->
+                /**=authc
+            </value>
+            <!--修改Shiro默认登录页面-->
+            <!-- <property name="loginUrl" value="/admin_login.jsp"/>-->
+        </property>
     </bean>
 
     <!--
@@ -22,5 +57,33 @@
     <!--
      3. 创建Realm
     -->
-    <bean id="myRealm" class="com.itheima.web.shiro.AuthRealm"/>
+    <bean id="myRealm" class="com.itheima.web.shiro.AuthRealm">
+        <!--凭证匹配器-->
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+
+    <!--创建凭证匹配器（普通加密）-->
+    <!--<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        &lt;!&ndash;指定加密，注意：算法必须和数据库加密的算法是一致的&ndash;&gt;
+        &lt;!&ndash;
+           md5: MD5算法 32位
+           sha1: sha1  64位
+           sha2: sha2  128位
+        &ndash;&gt;
+        <property name="hashAlgorithmName" value="md5"/>
+    </bean>-->
+    <!--创建自定义凭证匹配器-->
+    <bean id="credentialsMatcher" class="com.itheima.web.shiro.CustomCredentialsMatcher"/>
+
+    <!--====开启Shiro的注解====-->
+    <!--
+        Shiro注解借助了Spring的AOP来实现授权校验
+    -->
+    <bean id="lifecycleBeanPostProcessor"
+          class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
 </beans>

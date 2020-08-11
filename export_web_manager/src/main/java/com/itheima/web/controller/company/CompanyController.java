@@ -4,6 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.itheima.domain.company.Company;
 import com.itheima.service.company.CompanyService;
 import com.itheima.web.controller.BaseController;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -55,9 +58,14 @@ public class CompanyController extends BaseController {
      *    @RequestParam(defaultValue = "1")： 给参数设置默认值，当前参数为NULL使用默认值
      */
     @RequestMapping("/list")
+    @RequiresPermissions("用户管理")
     public String list( //HttpServletRequest request,
                         @RequestParam(defaultValue = "1")Integer pageNum,
                         @RequestParam(defaultValue = "5")Integer pageSize){
+        //判断当前用户是否有企业管理权限
+        //Subject subject = SecurityUtils.getSubject();
+        //subject.checkPermission("企业管理");
+        //subject.checkPermission("用户管理");
         //调用业务方法
         PageInfo pageInfo = companyService.findByPage(pageNum,pageSize);
         //把数据存入request域
