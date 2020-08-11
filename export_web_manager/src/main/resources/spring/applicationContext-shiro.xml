@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--
+         1.创建ShiroFitter的对象: 处理所有认证和授权逻辑的对象
+         注意： bean的id和web.xml的filter-name是一致的
+       -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!--注入安全管理器-->
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <!--
+     2. 创建安全管理器
+    -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--注入Realm-->
+        <property name="realm" ref="myRealm"/>
+    </bean>
+
+    <!--
+     3. 创建Realm
+    -->
+    <bean id="myRealm" class="com.itheima.web.shiro.AuthRealm"/>
+</beans>

@@ -3,7 +3,9 @@ package com.itheima.service.system.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.itheima.dao.system.ModuleDao;
 import com.itheima.dao.system.UserDao;
+import com.itheima.domain.system.Module;
 import com.itheima.domain.system.User;
 import com.itheima.service.system.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,4 +80,11 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return userDao.findByEmail(email);
+    }
+
+
 }

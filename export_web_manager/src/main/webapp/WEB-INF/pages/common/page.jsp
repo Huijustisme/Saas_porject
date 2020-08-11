@@ -14,7 +14,7 @@
             <a href="javascript:goPage(1)" aria-label="Previous">首页</a>
         </li>
         <li><a href="javascript:goPage(${pageInfo.prePage})">上一页</a></li>
-        <c:forEach begin="1" end="${pageInfo.pages}" var="i">
+        <c:forEach begin="${pageInfo.pageNum-5>0?pageInfo.pageNum-5:1}" end="${pageInfo.pageNum+5>pageInfo.pages?pageInfo.pages:pageInfo.pageNum+5}" var="i">
             <li class="paginate_button ${pageInfo.pageNum==i ? 'active':''}"><a href="javascript:goPage(${i})">${i}</a></li>
         </c:forEach>
         <li><a href="javascript:goPage(${pageInfo.nextPage})">下一页</a></li>

@@ -2,6 +2,7 @@ package com.itheima.service.system;
 
 
 import com.github.pagehelper.PageInfo;
+import com.itheima.domain.system.Module;
 import com.itheima.domain.system.User;
 
 import java.util.List;
@@ -55,4 +56,12 @@ public interface UserService {
      * @param roleIds
      */
     void changeRole(String userid, List<String> roleIds);
+
+    /**
+     * 通过邮箱账户查询用户对象
+     * @param email
+     * @return
+     */
+    User findByEmail(String email);
+
 }

@@ -41,6 +41,23 @@
            rm.role_id = #{roleid}
     </select>
 
+    <!--根据belong查询模块-->
+    <select id="findByBelong" parameterType="int" resultMap="BaseResultMap">
+           select * from ss_module where belong = #{belong}
+    </select>
+
+    <!--查询当前用户分配的权限-->
+    <select id="findModuleByUserId" parameterType="string" resultMap="BaseResultMap">
+        SELECT
+           distinct m.*
+        FROM
+          pe_role_user ru
+              INNER JOIN pe_role_module rm ON ru.role_id = rm.role_id
+              INNER JOIN ss_module m ON rm.module_id = m.module_id
+        WHERE
+           ru.user_id = #{userId}
+    </select>
+
     <!--删除-->
     <delete id="delete">
         delete from ss_module where module_id = #{id}

@@ -1,5 +1,6 @@
 package com.itheima.web.controller;
 
+import com.itheima.domain.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,7 @@ public class BaseController {
     protected HttpServletRequest request;
     @Autowired
     protected HttpServletResponse response;
-            ;
+
     @Autowired
     protected HttpSession session;
 
@@ -25,13 +26,20 @@ public class BaseController {
      * 获取登录企业ID方法
      */
     protected String getLoginCompanyId(){
-        return "1";
+        return getLoginUser().getCompanyId();
     }
 
     /**
      * 获取登录企业名称方法
      */
     protected String getLoginCompanyName(){
-        return "传智播客教育股份有限公司";
+        return getLoginUser().getCompanyName();
+    }
+
+    /**
+     * 获取当前登录用户
+     */
+    protected User getLoginUser(){
+        return (User)session.getAttribute("loginUser");
     }
 }

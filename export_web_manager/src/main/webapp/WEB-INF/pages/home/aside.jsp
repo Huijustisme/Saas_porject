@@ -10,8 +10,8 @@
                 <img src="../img/user2-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p> ${sessionScope.user.userName}</p>
-                <a href="#">${sessionScope.user.companyName}</a>
+                <p> ${sessionScope.loginUser.userName}</p>
+                <a href="#">${sessionScope.loginUser.companyName}</a>
             </div>
         </div>
 
@@ -19,8 +19,9 @@
         <ul class="sidebar-menu">
             <li class="header">菜单</li>
 
-            <%--
-                        <c:forEach items="${sessionScope.modules}" var="item">
+                        <%--动态菜单--%>
+                        <%--外部遍历，显示主菜单--%>
+                        <c:forEach items="${sessionScope.menus}" var="item">
                             <c:if test="${item.ctype==0}">
                                 <li class="treeview">
                                     <a href="#">
@@ -28,7 +29,8 @@
                                         <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                                     </a>
                                     <ul class="treeview-menu">
-                                        <c:forEach items="${sessionScope.modules}" var="item2">
+                                            <%--内部遍历，显示二级菜单--%>
+                                        <c:forEach items="${sessionScope.menus}" var="item2">
                                             <c:if test="${item2.ctype==1 && item2.parentId == item.id}">
                                                 <li id="${item2.id}">
                                                     <a onclick="setSidebarActive(this)" href="${item2.curl}" target="iframe">
@@ -41,9 +43,8 @@
                                 </li>
                             </c:if>
                         </c:forEach>
-                         --%>
 
-           <li class="treeview">
+           <%--<li class="treeview">
                <a href="#">
                    <i class="fa fa-cube"></i> <span>Saas管理</span>
                    <span class="pull-right-container">
@@ -191,7 +192,7 @@
                      </a>
                  </li>
              </ul>
-         </li>
+         </li>--%>
 
                    </ul>
 

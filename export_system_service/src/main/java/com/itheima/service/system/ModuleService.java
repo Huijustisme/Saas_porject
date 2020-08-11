@@ -3,6 +3,7 @@ package com.itheima.service.system;
 
 import com.github.pagehelper.PageInfo;
 import com.itheima.domain.system.Module;
+import com.itheima.domain.system.User;
 
 import java.util.List;
 
@@ -54,4 +55,11 @@ public interface ModuleService {
      * @return
      */
     List<Module> findRoleModuleByRoleId(String roleid);
+
+    /**
+     * 根据不同用户级别查询权限
+     * @param loginUser
+     * @return
+     */
+    List<Module> findModuleByUser(User loginUser);
 }

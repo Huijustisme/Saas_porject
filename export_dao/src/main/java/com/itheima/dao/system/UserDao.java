@@ -2,6 +2,7 @@ package com.itheima.dao.system;
 
 
 
+import com.itheima.domain.system.Module;
 import com.itheima.domain.system.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -51,4 +52,13 @@ public interface UserDao {
      * @param roleId
      */
     void saveUserRole(@Param("userid") String userid, @Param("roleId") String roleId);
+
+    /**
+     * 通过用户账号查询用户对象
+     * @param email
+     * @return
+     */
+    User findByEmail(String email);
+
+
 }
