@@ -3,7 +3,8 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
     <!--1.扫描Controller注解-->
     <context:component-scan base-package="com.itheima.web"/>
@@ -36,5 +37,15 @@
     -->
     <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 
-    <bean class="com.itheima.web.exceptions.CustomExceptionResovler"/>
+    <!--dubbo消费方配置-->
+    <!--1.应用名称-->
+    <dubbo:application name="export_web_manager"/>
+    <!--2.zookeeper连接-->
+    <dubbo:registry address="zookeeper://192.168.150.99:2181"/>
+    <!--3.dubbo注解扫描-->
+    <dubbo:annotation package="com.itheima.web"/>
+
+
+
+    <!--<bean class="com.itheima.web.exceptions.CustomExceptionResovler"/>-->
 </beans>

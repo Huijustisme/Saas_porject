@@ -1,11 +1,12 @@
 package com.itheima.domain.company;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 企业
  */
-public class Company {
+public class Company implements Serializable {
     /**
      * 对象唯一标记，对应数据库主键
      */

@@ -1,5 +1,6 @@
 package com.itheima.web.controller.company;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageInfo;
 import com.itheima.domain.company.Company;
 import com.itheima.service.company.CompanyService;
@@ -7,7 +8,7 @@ import com.itheima.web.controller.BaseController;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,8 @@ import java.util.Date;
 @RequestMapping("/company")
 public class CompanyController extends BaseController {
     //注入业务对象
-    @Autowired
+    //@Autowired
+    @Reference//本地调用改为远程调用
     private CompanyService companyService;
 
 /**

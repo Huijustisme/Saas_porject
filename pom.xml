@@ -13,6 +13,12 @@
         <module>export_dao</module>
         <module>export_system_service</module>
         <module>export_web_manager</module>
+        <module>../dubbodemo_provider</module>
+        <module>export_company_interface</module>
+        <module>export_company_service</module>
+        <module>export_web_portal</module>
+        <module>export_cargo_interface</module>
+        <module>export_cargo_service</module>
     </modules>
 
 
