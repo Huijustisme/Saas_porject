@@ -81,6 +81,25 @@
         select <include refid="Base_Column_List"/> from co_contract_product where id = #{id}
     </select>
 
+    <!--根据船期查询出货信息-->
+    <select id="findByShipTime" resultType="com.itheima.domain.cargo.ContractProductVo">
+         SELECT
+              c.custom_name customName,
+              c.contract_no contractNo,
+              p.product_no productNo,
+              p.cnumber,
+              p.factory_name factoryName,
+              c.delivery_period deliveryPeriod,
+              c.ship_time shipTime,
+              c.trade_terms tradeTerms
+            FROM
+                co_contract c
+                  INNER JOIN co_contract_product p ON p.contract_id = c.id
+            WHERE
+               c.company_id = #{companyId}
+               AND DATE_FORMAT(c.ship_time,'%Y-%m') = #{shipTime}
+    </select>
+
     <!--根据id删除-->
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from co_contract_product where id = #{id}

@@ -45,7 +45,24 @@
     <!--3.dubbo注解扫描-->
     <dubbo:annotation package="com.itheima.web"/>
 
+    <!--读取qiniu.properties配置-->
+    <context:property-placeholder location="classpath:properties/qiniu.properties"/>
 
+    <!--文件上传解析器-->
+    <!--
+        注意：文件上传解析器的bean的id必须有，且名称为multipartResolver
+    -->
+    <!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        &lt;!&ndash;文件大小限制&ndash;&gt;
+        <property name="maxUploadSize" value="#{10*1024*1024}"/>
+    </bean>-->
+
+    <!-- 文件上传解析器-->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设置上传文件的最大尺寸为 5MB -->
+        <property name="maxUploadSize" value="5242880"/>
+    </bean>
 
     <!--<bean class="com.itheima.web.exceptions.CustomExceptionResovler"/>-->
 </beans>

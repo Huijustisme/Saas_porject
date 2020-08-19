@@ -89,6 +89,11 @@
       select <include refid="Base_Column_List" /> from co_contract where id = #{id,jdbcType=VARCHAR}
     </select>
 
+    <!--查询大部门经理的合同-->
+    <select id="selectByDeptId" resultType="com.itheima.domain.cargo.Contract">
+        SELECT * FROM co_contract WHERE FIND_IN_SET(create_dept,  getDeptChild(#{deptId}) )
+    </select>
+
     <!--根据id删除-->
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
       delete from co_contract where id = #{id,jdbcType=VARCHAR}

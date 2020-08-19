@@ -54,4 +54,17 @@ public class ContractServiceImpl implements ContractService {
     public void delete(String id) {
         contractDao.deleteByPrimaryKey(id);
     }
+
+    /**
+     * 查询大部门经理的合同
+     *
+     * @param deptId
+     * @param pageNum
+     * @param pageSize
+     */
+    @Override
+    public PageInfo selectByDeptId(String deptId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        return new PageInfo(contractDao.selectByDeptId(deptId));
+    }
 }
