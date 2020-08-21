@@ -31,6 +31,36 @@ public class ExportServiceImpl implements ExportService{
         return new PageInfo<>(exportDao.selectByExample(exportExample));
     }
 
+    /**
+     * 根据报运结果更新报运信息
+     *
+     * @param exportResult
+     */
+    @Override
+    public void updateExport(ExportResult exportResult) {
+        //1.更新报运单状态
+        if(exportResult.getState()==2){
+            Export export = new Export();
+            export.setId(exportResult.getExportId());
+            export.setState(2);
+            exportDao.updateByPrimaryKeySelective(export);
+
+
+            //2.更新报运商品税收
+            Set<ExportProductResult> products = exportResult.getProducts();
+            if(products!=null && products.size()>0){
+                for(ExportProductResult exportProductResult:products){
+                    ExportProduct exportProduct = new ExportProduct();
+                    exportProduct.setId(exportProductResult.getExportProductId());
+                    exportProduct.setTax(exportProductResult.getTax());
+                    exportProductDao.updateByPrimaryKeySelective(exportProduct);
+                }
+            }
+        }
+
+
+    }
+
     @Override
     public List<Export> findAll(ExportExample exportExample) {
         return exportDao.selectByExample(exportExample);

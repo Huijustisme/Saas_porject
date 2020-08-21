@@ -25,7 +25,72 @@
 <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="../../plugins/echarts/echarts.min.js"></script>
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
+
+    //页面加载
+    $(function () {
+        $.ajax({
+            url:'/stat/getFactoryData.do',
+            type:'get',
+            dataType:'json',
+            success:function (data) {
+
+                //用于存放标题的数组
+                var titleArray = [];
+
+                for(var i=0;i<data.length;i++){
+                    titleArray[i] = data[i].name;
+                }
+
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main'));
+
+                // 指定图表的配置项和数据
+                var option = {
+                    title: {
+                        text: '生成厂家销售统计',
+                        subtext: '来自黑马程序员',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: titleArray
+                    },
+                    series: [
+                        {
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: data,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+            }
+
+        });
+
+
+    });
+
+
+    /*// 基于准备好的dom，初始化echarts实例
     var myChart = echarts.init(document.getElementById('main'));
 
     // 指定图表的配置项和数据
@@ -58,6 +123,6 @@
                 }
             ]
         })
-    });
+    });*/
 </script>
 </html>

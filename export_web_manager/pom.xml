@@ -126,6 +126,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <!--依赖统计分析服务接口-->
+        <dependency>
+            <groupId>com.itheima</groupId>
+            <artifactId>export_stat_interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
 

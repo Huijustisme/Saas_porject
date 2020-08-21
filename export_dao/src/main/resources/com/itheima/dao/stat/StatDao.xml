@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.stat.StatDao">
+
+    <!--厂家销售-->
+    <select id="getFactoryData" parameterType="string" resultType="map">
+        SELECT
+          factory_name AS 'name',SUM(amount) AS 'value'
+        FROM
+          co_contract_product
+          WHERE
+           company_id = #{companyId}
+          GROUP BY factory_name
+    </select>
+
+    <!--销量前5名-->
+    <select id="getSellData" parameterType="string" resultType="map">
+        SELECT
+          product_no AS 'name',SUM(amount) AS 'value'
+        FROM
+          co_contract_product
+           WHERE company_id = #{companyId}
+           GROUP BY product_no
+           ORDER BY SUM(amount) DESC
+           LIMIT 5
+    </select>
+
+
+    <!--系统访问人数统计-->
+    <select id="getOnlineData" parameterType="string" resultType="map">
+        SELECT
+          info.A1 AS 'name',IFNULL(hour_total.total,0) AS 'value'
+        FROM
+          st_online_info info
+            LEFT JOIN
+        (SELECT
+          DATE_FORMAT(TIME,'%H') HOUR  ,COUNT(*) total
+        FROM
+           st_sys_log
+            WHERE company_id = #{companyId}
+           GROUP BY DATE_FORMAT(TIME,'%H')) hour_total
+           ON info.A1 = hour_total.hour
+
+    </select>
+
+
+</mapper>

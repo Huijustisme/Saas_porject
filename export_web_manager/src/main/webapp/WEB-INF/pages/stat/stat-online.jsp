@@ -35,31 +35,57 @@
 <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="../../plugins/echarts/echarts.min.js"></script>
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
-    // 指定图表的配置项和数据
-    $.get('/stat/onlineCharts.do').done(function (data) {
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(
-            {
-                title: {
-                    left: 'center',
-                    text: '在线人数折线图',
-                },
-                xAxis: {
-                    type: 'category',
-                    data: data.title
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    data: data.value,
-                    type: 'line'
-                }]
+    //页面加载
+    $(function () {
+        $.ajax({
+            url:'/stat/getOnlineData.do',
+            type:'get',
+            dataType:'json',
+            success:function (data) {
+
+                //用于存放标题的数组
+                var titleArray = [];
+                //用于存放value值的数组
+                var valueArray = [];
+
+                for(var i=0;i<data.length;i++){
+                    titleArray[i] = data[i].name;
+                    valueArray[i] = data[i].value;
+                }
+
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main'));
+
+                // 指定图表的配置项和数据
+                var option = {
+                    xAxis: {
+                        type: 'category',
+                        data: titleArray
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        data: valueArray,
+                        type: 'line'
+                    }]
+                };
+
+
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
             }
-        )
+
+        });
+
+
     });
+
+
+
+
 </script>
 
 </html>
